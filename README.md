@@ -1,10 +1,18 @@
 # 🔐 Secure Password Generator v3
 
+<<<<<<< HEAD
 A modern, responsive web application for generating secure passwords with customizable options. Built with vanilla JavaScript and deployed using Docker and Terraform on AWS.
 
 ## ✨ Features
 
 - **Customizable Password Length**: 8-32 characters
+=======
+A modern, responsive web application for generating secure passwords with customisable options. Built with vanilla JavaScript and deployed using Docker and Terraform on AWS.
+
+##  Features
+
+- **Customisable Password Length**: 8-32 characters
+>>>>>>> 057e71b (Add README and infra files from branch-1 to main branch)
 - **Character Options**:
   - Uppercase letters (A-Z)
   - Lowercase letters (a-z)
@@ -14,7 +22,11 @@ A modern, responsive web application for generating secure passwords with custom
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Modern UI**: Clean, intuitive interface with smooth animations
 
+<<<<<<< HEAD
 ## 🛠️ Technology Stack
+=======
+##  Technology Stack
+>>>>>>> 057e71b (Add README and infra files from branch-1 to main branch)
 
 ### Frontend
 - **HTML5**: Semantic markup
@@ -29,6 +41,7 @@ A modern, responsive web application for generating secure passwords with custom
 - **AWS EC2**: Cloud hosting
 - **Amazon Linux 2**: Operating system
 
+<<<<<<< HEAD
 ## 🚀 Deployment Architecture
 
 ```
@@ -47,6 +60,8 @@ A modern, responsive web application for generating secure passwords with custom
 
 ## 📦 Local Development
 
+=======
+>>>>>>> 057e71b (Add README and infra files from branch-1 to main branch)
 ### Prerequisites
 - Docker installed
 - Modern web browser
@@ -88,6 +103,7 @@ terraform apply
 - **Auto-deployment**: User data script installs Docker and runs the app
 - **High Availability**: Application starts automatically on instance boot
 
+<<<<<<< HEAD
 ## 📁 Project Structure
 
 ```
@@ -176,6 +192,8 @@ cd infra
 terraform destroy
 ```
 
+=======
+>>>>>>> 057e71b (Add README and infra files from branch-1 to main branch)
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -195,5 +213,8 @@ This project is open source and available under the [MIT License](LICENSE).
 - Uses modern web standards and best practices
 
 ---
+<<<<<<< HEAD
 
 **Built with ❤️ using modern web technologies and cloud infrastructure**
+=======
+>>>>>>> 057e71b (Add README and infra files from branch-1 to main branch)
