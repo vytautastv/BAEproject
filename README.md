@@ -1,10 +1,10 @@
 # 🔐 Secure Password Generator v3
 
-A modern, responsive web application for generating secure passwords with customizable options. Built with vanilla JavaScript and deployed using Docker and Terraform on AWS.
+A modern, responsive web application for generating secure passwords with customisable options. Built with vanilla JavaScript and deployed using Docker and Terraform on AWS.
 
-## ✨ Features
+##  Features
 
-- **Customizable Password Length**: 8-32 characters
+- **Customisable Password Length**: 8-32 characters
 - **Character Options**:
   - Uppercase letters (A-Z)
   - Lowercase letters (a-z)
@@ -14,7 +14,7 @@ A modern, responsive web application for generating secure passwords with custom
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Modern UI**: Clean, intuitive interface with smooth animations
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 ### Frontend
 - **HTML5**: Semantic markup
@@ -28,24 +28,6 @@ A modern, responsive web application for generating secure passwords with custom
 - **Terraform**: Infrastructure as Code (IaC)
 - **AWS EC2**: Cloud hosting
 - **Amazon Linux 2**: Operating system
-
-## 🚀 Deployment Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   User Browser  │───▶│   AWS EC2       │───▶│   Docker        │
-│                 │    │   (eu-west-2)   │    │   Container     │
-│                 │    │                 │    │   (Nginx)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                              │
-                              ▼
-                       ┌─────────────────┐
-                       │   Terraform     │
-                       │   Infrastructure│
-                       └─────────────────┘
-```
-
-## 📦 Local Development
 
 ### Prerequisites
 - Docker installed
@@ -88,94 +70,6 @@ terraform apply
 - **Auto-deployment**: User data script installs Docker and runs the app
 - **High Availability**: Application starts automatically on instance boot
 
-## 📁 Project Structure
-
-```
-BAEproject/
-├── index.html              # Main application file
-├── Dockerfile              # Docker configuration
-├── deploy.sh              # Local deployment script
-├── README.md              # This file
-└── infra/                 # Terraform infrastructure
-    ├── main.tf            # Main Terraform configuration
-    ├── variables.tf       # Variable definitions
-    ├── user_data.sh       # EC2 boot script
-    ├── terraform.tfvars.example
-    └── README.md          # Infrastructure documentation
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-- `AWS_REGION`: AWS region for deployment (default: eu-west-2)
-- `INSTANCE_TYPE`: EC2 instance type (default: t2.micro)
-- `KEY_PAIR_NAME`: SSH key pair for instance access
-
-### Customization
-- Modify `index.html` for UI changes
-- Update `Dockerfile` for container configuration
-- Adjust `infra/main.tf` for infrastructure changes
-
-## 🌐 Live Demo
-
-**Current Deployment**: [http://35.176.248.238](http://35.176.248.238)
-
-*Note: This is a demo deployment and may be taken down periodically.*
-
-## 📊 Performance
-
-- **Load Time**: < 1 second
-- **Bundle Size**: < 4KB (minimal dependencies)
-- **Browser Support**: All modern browsers
-- **Mobile Performance**: Optimized for mobile devices
-
-## 🔒 Security Features
-
-- **Client-side Generation**: Passwords generated in browser (no server storage)
-- **Secure Random**: Uses cryptographically secure random number generation
-- **No Data Collection**: No user data is stored or transmitted
-- **HTTPS Ready**: Configured for secure connections
-
-## 🧪 Testing
-
-### Manual Testing
-1. Generate passwords with different lengths
-2. Test all character type combinations
-3. Verify copy-to-clipboard functionality
-4. Test responsive design on different screen sizes
-
-### Browser Compatibility
-- ✅ Chrome/Chromium
-- ✅ Firefox
-- ✅ Safari
-- ✅ Edge
-
-## 📈 Monitoring & Maintenance
-
-### Health Checks
-```bash
-# SSH into the instance
-ssh -i ~/.ssh/your-key.pem ec2-user@<public-ip>
-
-# Check application status
-docker ps
-docker logs bae-project-app
-./health_check.sh
-```
-
-### Logs
-- Application logs: `docker logs bae-project-app`
-- Deployment logs: `/var/log/app-deployment.log`
-- System logs: `journalctl -u docker`
-
-## 🗑️ Cleanup
-
-To avoid AWS charges, destroy the infrastructure:
-```bash
-cd infra
-terraform destroy
-```
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -195,5 +89,3 @@ This project is open source and available under the [MIT License](LICENSE).
 - Uses modern web standards and best practices
 
 ---
-
-**Built with ❤️ using modern web technologies and cloud infrastructure**
