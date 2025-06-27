@@ -1,0 +1,15 @@
+# AWS Configuration
+aws_region = "us-east-1"
+
+# Project Configuration
+project_name = "bae-project"
+
+# EC2 Configuration
+instance_type = "t2.micro"
+
+# SSH Key Configuration
+# Make sure this key pair exists in your AWS account
+key_pair_name = "bae-project-key"
+
+# Docker Configuration
+docker_image = "bae-project-app"

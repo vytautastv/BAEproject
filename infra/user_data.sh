@@ -1,0 +1,209 @@
+#!/bin/bash
+
+# Update system packages
+yum update -y
+
+# Install Docker
+amazon-linux-extras install docker -y
+service docker start
+systemctl enable docker
+
+# Add ec2-user to docker group
+usermod -a -G docker ec2-user
+
+# Install git
+yum install -y git
+
+# Create application directory
+mkdir -p /home/ec2-user/app
+cd /home/ec2-user/app
+
+# Copy application files from the current directory
+# Since we're using user data, we'll create the files directly
+
+# Create Dockerfile
+cat > Dockerfile << 'EOF'
+# Use official Nginx image
+FROM nginx:alpine
+
+# Copy static site files to nginx public directory
+COPY index.html /usr/share/nginx/html/
+
+# Expose port 80
+EXPOSE 80
+EOF
+
+# Create index.html
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure Password Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .password-display {
+      background: #eee;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-family: monospace;
+      margin-top: 1rem;
+      text-align: center;
+      word-break: break-all;
+    }
+    button {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      background: #007bff;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .options {
+      margin-top: 1rem;
+    }
+    .copy-btn {
+      background: #28a745;
+      margin-top: 0.5rem;
+    }
+    .copy-btn:hover {
+      background: #1e7e34;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Secure Password Generator v3</h2>
+
+    <label>Password Length: <span id="lengthValue">16</span></label>
+    <input type="range" id="length" min="8" max="32" value="16">
+
+    <div class="options">
+      <label><input type="checkbox" id="uppercase" checked> Include Uppercase</label>
+      <label><input type="checkbox" id="lowercase" checked> Include Lowercase</label>
+      <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
+      <label><input type="checkbox" id="symbols" checked> Include Symbols</label>
+    </div>
+
+    <div class="password-display" id="password">Your password will appear here</div>
+
+    <button onclick="generatePassword()">Generate Password</button>
+    <button class="copy-btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+  </div>
+
+  <script>
+    const lengthInput = document.getElementById('length');
+    const lengthValue = document.getElementById('lengthValue');
+    const passwordDisplay = document.getElementById('password');
+
+    const uppercase = document.getElementById('uppercase');
+    const lowercase = document.getElementById('lowercase');
+    const numbers = document.getElementById('numbers');
+    const symbols = document.getElementById('symbols');
+
+    const chars = {
+      upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      lower: "abcdefghijklmnopqrstuvwxyz",
+      number: "0123456789",
+      symbol: "!@#$%^&*()_+{}[]<>?/|~"
+    };
+
+    lengthInput.addEventListener('input', () => {
+      lengthValue.textContent = lengthInput.value;
+    });
+
+    function generatePassword() {
+      let pool = "";
+      if (uppercase.checked) pool += chars.upper;
+      if (lowercase.checked) pool += chars.lower;
+      if (numbers.checked) pool += chars.number;
+      if (symbols.checked) pool += chars.symbol;
+
+      const length = parseInt(lengthInput.value);
+      if (!pool) {
+        passwordDisplay.textContent = "Please select at least one option.";
+        return;
+      }
+
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        const rand = Math.floor(Math.random() * pool.length);
+        password += pool[rand];
+      }
+
+      passwordDisplay.textContent = password;
+    }
+
+    function copyToClipboard() {
+      const text = passwordDisplay.textContent;
+      if (!text || text.includes("Please select")) return;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Password copied to clipboard!");
+      });
+    }
+  </script>
+</body>
+</html>
+EOF
+
+# Build Docker image
+docker build -t ${docker_image} .
+
+# Stop any existing containers
+docker stop $(docker ps -q) 2>/dev/null || true
+docker rm $(docker ps -aq) 2>/dev/null || true
+
+# Run the application
+docker run -d -p 80:80 --name ${project_name}-app ${docker_image}
+
+# Create a simple health check script
+cat > /home/ec2-user/health_check.sh << 'EOF'
+#!/bin/bash
+if curl -f http://localhost:80 > /dev/null 2>&1; then
+    echo "Application is running successfully"
+else
+    echo "Application is not responding"
+    exit 1
+fi
+EOF
+
+chmod +x /home/ec2-user/health_check.sh
+
+# Log the deployment
+echo "Deployment completed at $(date)" >> /var/log/app-deployment.log
+echo "Docker container status:" >> /var/log/app-deployment.log
+docker ps >> /var/log/app-deployment.log
