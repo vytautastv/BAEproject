@@ -1,3 +1,40 @@
+#!/bin/bash
+
+# Update system packages
+yum update -y
+
+# Install Docker
+amazon-linux-extras install docker -y
+service docker start
+systemctl enable docker
+
+# Add ec2-user to docker group
+usermod -a -G docker ec2-user
+
+# Install git
+yum install -y git
+
+# Create application directory
+mkdir -p /home/ec2-user/app
+cd /home/ec2-user/app
+
+# Copy application files from the current directory
+# Since we're using user data, we'll create the files directly
+
+# Create Dockerfile
+cat > Dockerfile << 'EOF'
+# Use official Nginx image
+FROM nginx:alpine
+
+# Copy static site files to nginx public directory
+COPY index.html /usr/share/nginx/html/
+
+# Expose port 80
+EXPOSE 80
+EOF
+
+# Create index.html
+cat > index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,3 +178,32 @@
   </script>
 </body>
 </html>
+EOF
+
+# Build Docker image
+docker build -t ${docker_image} .
+
+# Stop any existing containers
+docker stop $(docker ps -q) 2>/dev/null || true
+docker rm $(docker ps -aq) 2>/dev/null || true
+
+# Run the application
+docker run -d -p 80:80 --name ${project_name}-app ${docker_image}
+
+# Create a simple health check script
+cat > /home/ec2-user/health_check.sh << 'EOF'
+#!/bin/bash
+if curl -f http://localhost:80 > /dev/null 2>&1; then
+    echo "Application is running successfully"
+else
+    echo "Application is not responding"
+    exit 1
+fi
+EOF
+
+chmod +x /home/ec2-user/health_check.sh
+
+# Log the deployment
+echo "Deployment completed at $(date)" >> /var/log/app-deployment.log
+echo "Docker container status:" >> /var/log/app-deployment.log
+docker ps >> /var/log/app-deployment.log

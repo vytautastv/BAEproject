@@ -3,7 +3,7 @@
 echo "Building Docker image..."
 docker build -t password-generator .
 
-echo "Stopping existing container (if any)..."
+echo "Stopping existing container..."
 docker stop pg-container 2>/dev/null
 docker rm pg-container 2>/dev/null
 
