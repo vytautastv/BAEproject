@@ -8,8 +8,8 @@ project_name = "bae-project"
 instance_type = "t2.micro"
 
 # SSH Key Configuration
-# Using an existing key pair from your AWS account
-key_pair_name = "DevOpsStudents"
+# Using vyec2keypair
+key_pair_name = "vyec2keypair"
 
 # Docker Configuration
 docker_image = "bae-project-app"
