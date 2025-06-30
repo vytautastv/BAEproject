@@ -30,7 +30,7 @@ data "aws_ami" "amazon_linux_2" {
 
 # Security group for the EC2 instance
 resource "aws_security_group" "app_sg" {
-  name        = "${var.project_name}-app-sg"
+  name        = "${var.project_name}-app-sg-${formatdate("YYYYMMDD-hhmm", timestamp())}"
   description = "Security group for ${var.project_name} application"
 
   ingress {
